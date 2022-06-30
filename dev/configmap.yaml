@@ -1,0 +1,200 @@
+domain: caskey-p1cbb.bahsoftwarefactory.com
+
+istio:
+  enabled: true
+
+  ingressGateways:
+    # public-ingressgateway:
+    #   type: "NodePort"
+    #   nodePortBase: 30000 
+
+    public-ingressgateway:
+      type: "LoadBalancer"
+      kubernetesResourceSpec:
+        serviceAnnotations:
+          service.beta.kubernetes.io/aws-load-balancer-type: "external"
+          service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
+          service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "kubernetes.io/cluster/c-m-4x5dnxxl=owned"
+          service.beta.kubernetes.io/aws-load-balancer-name: "caskey-p1cbb"
+          service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:729651203190:certificate/55c016f6-9157-4a38-a42d-8f85b17adc1b"
+          service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-08942469f925d9b66"
+          # service.beta.kubernetes.io/aws-load-balancer-target-node-labels: "worker=true"
+
+  gateways:
+    public:
+      ingressGateway: "public-ingressgateway"
+      hosts:
+      - "*.{{ .Values.domain }}"
+      # autoHttpRedirect:
+      #   enabled: true
+      tls:
+        # mode: PASSTHROUGH
+        # key: ""
+        # cert: ""
+        key: ""
+        cert: ""
+
+
+  # -- Flux reconciliation overrides specifically for the Istio Package
+  flux: {}
+
+  # -- Values to passthrough to the istio-controlplane chart: https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-controlplane.git
+  values: {}
+
+  # -- Post Renderers.  See docs/postrenders.md
+  postRenderers: []
+
+
+flux:
+  interval: 1m
+  rollback:
+    cleanupOnFail: false
+
+logging:
+  values:
+    elasticsearch:
+      master:
+        count: 1
+        persistence:
+          size: 256Mi
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1Gi
+      data:
+        count: 1
+        persistence:
+          size: 256Mi
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1Gi
+    kibana:
+      count: 1
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+
+monitoring:
+  enabled: true
+  values:
+    prometheus:
+      prometheusSpec:
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1Gi
+
+fluentbit:
+  values:
+    securityContext:
+      privileged: true
+
+gatekeeper:
+  values:
+    replicas: 1
+    controllerManager:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+    audit:
+      resources:
+        requests:
+          cpu: 200m
+          memory: 256Mi
+
+kyverno:
+  values:
+    replicaCount: 1
+
+twistlock:
+  enabled: false
+  values:
+    console:
+      persistence:
+        size: 256Mi
+
+addons: 
+  gitlab:
+    enabled: enable
+    hostnames:
+      gitlab: gitlab
+      registry: registry
+    values:
+      gitlab:
+        webservice:
+          minReplicas: 1
+          maxReplicas: 1
+          helmTests:
+            enabled: false
+        gitlab-shell:
+          minReplicas: 1
+          maxReplicas: 1
+        sidekiq:
+          minReplicas: 1
+          maxReplicas: 1
+      # minio:
+      #   enabled: false
+      # registry:
+      #   bucket: bsf-caskey-gitlab-registry-storage
+      #   hpa:
+      #     minReplicas: 1
+      #     maxReplicas: 1
+      global:
+        appConfig:
+          # object_store:
+          #   enabled: true
+          #   storage_options:
+          #     server_side_encryption: aws:kms
+          #     server_side_encryption_kms_key_id: arn:aws:kms:us-east-1:729651203190:alias/aws/s3
+          #   connection: 
+          #     secret: gitlab-rails-storage
+          #     key: connection
+          # artifacts: 
+          #   bucket: bsf-caskey-backups-storage
+          # backups:
+          #   bucket: bsf-caskey-gitlab-backups-storage
+          #   tmpBucket: bsf-caskey-gitlab-tmp-storage
+          # dependencyProxy:
+          #   bucket: bsf-caskey-gitlab-dependencyproxy-storage
+          # externalDiffs:
+          #   bucket: bsf-caskey-gitlab-externaldiffs-storage
+          # lfs:
+          #   bucket: bfs-caskey-gitlab-lfs-storage
+          # packages:
+          #   bucket: bsf-caskey-gitlab-packages-storage
+          # terraformState:
+          #   bucket: bsf-caskey-gitlab-terraformstate-storage
+          # uploads:
+          #   bucket: bsf-caskey-gitlab-uploads-storage
+          defaultCanCreateGroup: true
+          enableUsagePing: true
+          enableImpersonation: true
+          defaultTheme: 11
+          defaultProjectsFeatures:
+            issues: true
+            mergeRequests: true
+            wiki: true
+            snippets: true
+            builds: true
+            containerRegistry: true
+          # gitlab: 
+          #   toolbox:
+          #     backups:
+          #       objectStorage:
+          #         config: 
+          #           secret: gitlab-storage-config
+          #           key: config 
+          # omniauth:
+          #   enabled: true
+          #   allowSingleSignOn: ['saml', 'github']
+          #   providers: 
+          #     - secret: gitlab-github
+          #     - secret: gitlab-keycloak
+          # registry: 
+          #   enabled: true
+          #   storage:
+          #     secret: gitlab-registry-storage
+          #     key: config
