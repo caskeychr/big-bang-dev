@@ -92,6 +92,7 @@ fluentbit:
       privileged: true
 
 gatekeeper:
+  enabled: false
   values:
     replicas: 1
     controllerManager:
