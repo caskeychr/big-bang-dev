@@ -44,11 +44,23 @@ istio:
   # -- Post Renderers.  See docs/postrenders.md
   postRenderers: []
 
+jaegar: 
+  enabled: false
 
-flux:
-  interval: 1m
-  rollback:
-    cleanupOnFail: false
+kiali: 
+  enabled: false
+
+clusterAuditor:
+  enabled: false
+
+gatekeeper: 
+  enabled: false
+
+kyverno:
+  enabled: false
+
+kyvernopolicies:
+  enabled: false
 
 logging:
   enabled: false
@@ -77,6 +89,24 @@ logging:
           cpu: 200m
           memory: 512Mi
 
+eckoperator:
+  enabled: false
+
+fluentbit:
+  enabled: false
+  values:
+    securityContext:
+      privileged: true
+
+promtail: 
+  enabled: false
+
+loki: 
+  enabled: false
+
+tempo:
+  enabled: false
+
 monitoring:
   enabled: false
   values:
@@ -87,32 +117,6 @@ monitoring:
             cpu: 200m
             memory: 1Gi
 
-fluentbit:
-  enabled: false
-  values:
-    securityContext:
-      privileged: true
-
-gatekeeper:
-  enabled: false
-  values:
-    replicas: 1
-    controllerManager:
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-    audit:
-      resources:
-        requests:
-          cpu: 200m
-          memory: 256Mi
-
-kyverno:
-  enabled: false
-  values:
-    replicaCount: 1
-
 twistlock:
   enabled: false
   values:
@@ -121,6 +125,19 @@ twistlock:
         size: 256Mi
 
 addons: 
+  
+  argocd: 
+    enabled: false
+
+  authservice: 
+    enabled: false
+  
+  minioOperator:
+    enabled: false
+
+  minio: 
+    enabled: false
+  
   gitlab:
     enabled: enable
     hostnames:
@@ -202,3 +219,30 @@ addons:
           #   storage:
           #     secret: gitlab-registry-storage
           #     key: config
+  
+  gitlabRunner: 
+    enabled: true
+  
+  nexus:
+    enabled: false
+  
+  sonarqube:
+    enabled: false
+  
+  anchore:
+    enabled: false
+  
+  mattermostoperator:
+    enabled: false
+  
+  mattermost: 
+    enabled: false
+  
+  velero:
+    enabled: false
+  
+  keycloak:
+    enabled: false
+  
+  vault: 
+    enabled: false
