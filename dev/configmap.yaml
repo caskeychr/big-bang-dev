@@ -12,12 +12,8 @@ istio:
       type: "LoadBalancer"
       kubernetesResourceSpec:
         serviceAnnotations:
-          service.beta.kubernetes.io/aws-load-balancer-type: "external"
-          service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "instance"
-          service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "kubernetes.io/cluster/c-m-4x5dnxxl=owned"
-          service.beta.kubernetes.io/aws-load-balancer-name: "caskey-p1cbb"
-          service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-east-1:729651203190:certificate/55c016f6-9157-4a38-a42d-8f85b17adc1b"
-          service.beta.kubernetes.io/aws-load-balancer-subnets: "subnet-08942469f925d9b66"
+          service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "kubernetes.io/cluster/c-m-n6rc24wl=owned,env=staging,ingress-type=public"
+          service.beta.kubernetes.io/aws-load-balancer-type: nlb
           # service.beta.kubernetes.io/aws-load-balancer-target-node-labels: "worker=true"
 
   gateways:
@@ -108,7 +104,7 @@ tempo:
   enabled: false
 
 monitoring:
-  enabled: false
+  enabled: true
   values:
     prometheus:
       prometheusSpec:
@@ -139,11 +135,21 @@ addons:
     enabled: false
   
   gitlab:
-    enabled: enable
+    enabled: true
     hostnames:
       gitlab: gitlab
       registry: registry
+    objectStorage: 
+      type: "s3"
+      endpoint: "https://s3.amazonaws.com"
+      region: "us-east-1"
+      bucketPrefix: "caskey-p1cbb"
+      # accessKey: ""
+      # accessSecret: ""
+      iamProfile: "BSF_RKE2_ControlPlane_Role"
     values:
+      # minio: 
+      #   enabled: false
       gitlab:
         webservice:
           minReplicas: 1
@@ -156,40 +162,46 @@ addons:
         sidekiq:
           minReplicas: 1
           maxReplicas: 1
+          toolbox:
+        backups:
+          objectStorage:
+            config:
+              secret: gitlab-object-storage
+              key: backups
       # minio:
       #   enabled: false
-      # registry:
-      #   bucket: bsf-caskey-gitlab-registry-storage
+      registry:
+        bucket: caskey-p1cbb-gitlab-registry
       #   hpa:
       #     minReplicas: 1
       #     maxReplicas: 1
       global:
         appConfig:
-          # object_store:
-          #   enabled: true
-          #   storage_options:
-          #     server_side_encryption: aws:kms
-          #     server_side_encryption_kms_key_id: arn:aws:kms:us-east-1:729651203190:alias/aws/s3
-          #   connection: 
-          #     secret: gitlab-rails-storage
-          #     key: connection
-          # artifacts: 
-          #   bucket: bsf-caskey-backups-storage
-          # backups:
-          #   bucket: bsf-caskey-gitlab-backups-storage
-          #   tmpBucket: bsf-caskey-gitlab-tmp-storage
-          # dependencyProxy:
-          #   bucket: bsf-caskey-gitlab-dependencyproxy-storage
-          # externalDiffs:
-          #   bucket: bsf-caskey-gitlab-externaldiffs-storage
-          # lfs:
-          #   bucket: bfs-caskey-gitlab-lfs-storage
-          # packages:
-          #   bucket: bsf-caskey-gitlab-packages-storage
-          # terraformState:
-          #   bucket: bsf-caskey-gitlab-terraformstate-storage
-          # uploads:
-          #   bucket: bsf-caskey-gitlab-uploads-storage
+          object_store:
+            enabled: true
+            # storage_options:
+            #   server_side_encryption: aws:kms
+            #   server_side_encryption_kms_key_id: arn:aws:kms:us-east-1:729651203190:alias/aws/s3
+            connection: 
+              secret: gitlab-object-storage
+              key: rails
+          artifacts: 
+            bucket: caskey-p1cbb-backups-storage
+          backups:
+            bucket: caskey-p1cbb-gitlab-backups-storage
+            tmpBucket: caskey-p1cbb-gitlab-tmp-storage
+          dependencyProxy:
+            bucket: caskey-p1cbb-gitlab-dependencyproxy-storage
+          externalDiffs:
+            bucket: caskey-p1cbb-gitlab-externaldiffs-storage
+          lfs:
+            bucket: caskey-p1cbb-gitlab-lfs-storage
+          packages:
+            bucket: caskey-p1cbb-gitlab-packages-storage
+          terraformState:
+            bucket: caskey-p1cbb-gitlab-terraformstate-storage
+          uploads:
+            bucket: caskey-p1cbb-gitlab-uploads-storage
           defaultCanCreateGroup: true
           enableUsagePing: true
           enableImpersonation: true
@@ -201,13 +213,13 @@ addons:
             snippets: true
             builds: true
             containerRegistry: true
-          # gitlab: 
-          #   toolbox:
-          #     backups:
-          #       objectStorage:
-          #         config: 
-          #           secret: gitlab-storage-config
-          #           key: config 
+          gitlab: 
+            toolbox:
+              backups:
+                objectStorage:
+                  config: 
+                    secret: gitlab-object-storage
+                    key: backups
           # omniauth:
           #   enabled: true
           #   allowSingleSignOn: ['saml', 'github']
@@ -242,7 +254,7 @@ addons:
     enabled: false
   
   keycloak:
-    enabled: false
+    enabled: true
   
   vault: 
-    enabled: false
+    enabled: true
