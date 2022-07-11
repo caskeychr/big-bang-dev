@@ -1,4 +1,4 @@
 localrun.sh
 bigbang-dev-cert.yaml
-/bigbang*
+/bigbang
 *.pem
