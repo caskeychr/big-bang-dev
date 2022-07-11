@@ -1,0 +1,426 @@
+domain: caskey-p1cbb.bahsoftwarefactory.com
+
+istio:
+  enabled: true
+  git: 
+    repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-controlplane.git
+    path: "./chart"
+    tag: "1.13.4-bb.4"
+  keycloak:
+    enabled: true
+  extraservers:
+  - port: 
+      name: https-keycloak
+      protocol: TLS
+      number: 8443
+    hosts: 
+      - keycloak.caskey-p1cbb.bahsoftwarefactory.com
+    tls: 
+      mode: PASSTHROUGH
+  ingressGateways:
+    public-ingressgateway: 
+      type: "LoadBalancer"
+      kubernetesResourceSpec:
+        serviceAnnotations:
+          service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "kubernetes.io/cluster/c-m-rfqwx9w7=owned,env=staging,ingress-type=public"
+          service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    passthrough-ingressgateway:
+      type: "LoadBalancer"
+      kubernetesResourceSpec:
+        serviceAnnotations:
+          service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "kubernetes.io/cluster/c-m-rfqwx9w7=owned,env=staging,ingress-type=passthrough"
+          service.beta.kubernetes.io/aws-load-balancer-type: nlb
+          service.beta.kubernetes.io/aws-load-balancer-backend-protocol: "ssl"
+  gateways:
+    public: 
+      ingressGateway: "public-ingressgateway"
+      host: 
+        - "*.{{ .Values.domain }}"
+      tls: 
+        key: |
+          -----BEGIN PRIVATE KEY-----
+          MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC0SZrZQa+O44G4
+          LWkeimYDvV0VW29HWiMvgOqfRmeMaqhDFGhL0BF9CPFEUVHZIr1YjhuSUnPD+stR
+          r6RvReM8z4hJDUvrwcLwfwwGD0VzinJ4qYMkZpdRB7VOekwJil6k2UoWvleWBqQr
+          D/aki4LpKjjRwgfJ5ge2ESqTv40zWg85t2WE8LMQ/DK6yc8xiaNamE+acIEuzzP3
+          5mv2RnVEj4v+FQ6ocvM1jAgxhNcSEu5bMRZ3lY8hgWcIzdETPw+UDvzDd0dDTgVF
+          /WjvQoStycBZvxQwaTJ8gxzq8X9RF3aCl4e+NT0nDtt+tzg0wPyj1K1MKk/DR2ta
+          ckFAFI0rAgMBAAECggEAC+zeeEZ3BV2ZJASk8mc3LkIlWRdOOgsFTswZOOXgTZJ0
+          hNNhvroJnhqsUteKMXGx0py7yCb6D1mUf1e96bpWuJwFqMdfYT3U1jGhKvlxn53l
+          yoNz8EF0+uAmpwVB6FOlxQO2eeCnTH4t98c7ilDMHP40+fL6rukvU2S5S0KdZWsQ
+          A6PpsYzp3oW82rV9PLKbccB7AW9+VTY+KRz+cg6sLaQ5nQ8sqV7rChkYy8JZcFKk
+          X8Rl8S7ipvMx8FHko166UKCfoCJ7O8Ys2b2a/VQHsfVIVIyIqyWe1wkeEr1dXNo+
+          CGL767/4YZwBJBqu5efRk7RStHsx4ZlFtPk8FMKJWQKBgQDAKUk1Tn8jjR9AklTQ
+          HzhcmVeM+8lpX1SXqKTZgdSXVBAHeglNwrPEimxGe/9VAqTC0LSRlRrQULFpIA1v
+          OwspVSvIS/mkAHY1woBO07sCtfnihyP2zD/jKAIu5LSugFGSJv8AQqxaRXfq0JS9
+          IGqkoCRhePCw0rGCBozS+PttZwKBgQDwLn5KWKjAYt/+l5OmENmu58LAvCZ8kwhR
+          lcH7ZCOMEl8U8hOQrVDYRWy16B9VI65hQZFh4+guu64Z7fVMGNhxalrklKhAzXpo
+          tIkqO7Z0U8K9SzPgDYMDlXc9DB37vC+5VEWoc1UloyWDApe0CDBX7KnVyYvNi7ZB
+          TdEsBOvDnQKBgA+3ULV7ZgqSUCwHy8f5xbJNGEv/i8mCcni04kanx6tYxLbX1Er3
+          0ZwRdimNmqRpQvBsAVimyTqgXuIqLO8b9R28SYhoLlKrdv+OmM/ZoUHngDh2tQpK
+          Si9Z5lPPgLeE5yb86X4r9cysQdKCnKebLx2nu1H9gjH0CXCI+JuIoYehAoGBAIx5
+          9P2Q62pSqkYi64WWl2s4PG0z3qK/8H6fQ6zAPhY/7IK4r37QD9feix293Q2T5/sU
+          OW7yuKsUtFiQGAdhBL8ZAH5vABWe2LiC1zLvZ+CT2POUF4w0+urOscXv312MDLGt
+          u2wxwJxZ1qfQjWAL5hKW5iKXVgBrdbauR+giHK71AoGAUCcW4Z4L3qlCrZndrvnc
+          S77oBnsFkj6a3pUtmtTTw/XD6dB7Iq8cbB08F8moq8iQLUstdK3qYc0gnydyzCQu
+          qx1R+k00SI7rw44i6QNVgaiPzyS0OnqMZuOh79Lfac9mjcJ94OxVQcb0xJCPUnGq
+          1lVX7b0iyOHe9ljBEjU5vY8=
+          -----END PRIVATE KEY-----
+        cert: |
+          -----BEGIN CERTIFICATE-----
+          MIIFUTCCBDmgAwIBAgISAzDkCkuDMxsIFYGqHLbVwvRSMA0GCSqGSIb3DQEBCwUA
+          MDIxCzAJBgNVBAYTAlVTMRYwFAYDVQQKEw1MZXQncyBFbmNyeXB0MQswCQYDVQQD
+          EwJSMzAeFw0yMjA2MzAxMjQxNDZaFw0yMjA5MjgxMjQxNDVaMDAxLjAsBgNVBAMM
+          JSouY2Fza2V5LXAxY2JiLmJhaHNvZnR3YXJlZmFjdG9yeS5jb20wggEiMA0GCSqG
+          SIb3DQEBAQUAA4IBDwAwggEKAoIBAQC0SZrZQa+O44G4LWkeimYDvV0VW29HWiMv
+          gOqfRmeMaqhDFGhL0BF9CPFEUVHZIr1YjhuSUnPD+stRr6RvReM8z4hJDUvrwcLw
+          fwwGD0VzinJ4qYMkZpdRB7VOekwJil6k2UoWvleWBqQrD/aki4LpKjjRwgfJ5ge2
+          ESqTv40zWg85t2WE8LMQ/DK6yc8xiaNamE+acIEuzzP35mv2RnVEj4v+FQ6ocvM1
+          jAgxhNcSEu5bMRZ3lY8hgWcIzdETPw+UDvzDd0dDTgVF/WjvQoStycBZvxQwaTJ8
+          gxzq8X9RF3aCl4e+NT0nDtt+tzg0wPyj1K1MKk/DR2tackFAFI0rAgMBAAGjggJh
+          MIICXTAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUF
+          BwMCMAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFAvp5lMAd47cawfTafXqmXiovKea
+          MB8GA1UdIwQYMBaAFBQusxe3WFbLrlAJQOYfr52LFMLGMFUGCCsGAQUFBwEBBEkw
+          RzAhBggrBgEFBQcwAYYVaHR0cDovL3IzLm8ubGVuY3Iub3JnMCIGCCsGAQUFBzAC
+          hhZodHRwOi8vcjMuaS5sZW5jci5vcmcvMDAGA1UdEQQpMCeCJSouY2Fza2V5LXAx
+          Y2JiLmJhaHNvZnR3YXJlZmFjdG9yeS5jb20wTAYDVR0gBEUwQzAIBgZngQwBAgEw
+          NwYLKwYBBAGC3xMBAQEwKDAmBggrBgEFBQcCARYaaHR0cDovL2Nwcy5sZXRzZW5j
+          cnlwdC5vcmcwggEFBgorBgEEAdZ5AgQCBIH2BIHzAPEAdwBByMqx3yJGShDGoToJ
+          QodeTjGLGwPr60vHaPCQYpYG9gAAAYG02KaQAAAEAwBIMEYCIQCGa6O3CUwMinRW
+          qg/CD+MjbXDcCKrc83cMs1MthBfIXgIhAI8t75S6SUGoe1gI7MFBFw2373yA/ScT
+          K/a1tzcMghKWAHYARqVV63X6kSAwtaKJafTzfREsQXS+/Um4havy/HD+bUcAAAGB
+          tNinAwAABAMARzBFAiEA7jDK8gCvHsEeq276nOfiM/FYYJjrQ/XpZMkhzso8qj8C
+          IH35vUWk5o+XTpfBxVs6E5E6/QntDViyXWRiWUqqa7sTMA0GCSqGSIb3DQEBCwUA
+          A4IBAQBAkSrJxGB5Dgnk9Z5RwPa2YXwz0lV7b1lpmJlTfSr//oKRX92ymOgcSlOm
+          ZAsjkS0zbVqaPtrege00xNSGJoZISohorGOMHYmi8SMzlPohWarpkFHue4WbNqSN
+          H6oWL+2xUGC0Tj3lOOVX2XPik4QG8z8l+ueGT3N/xr5dbDwlZyzK6yyAIKqRGtg1
+          XmXfihQ9VY7p4JrJIkaAEsMnvGpvA1kSwwxxyZVUaa5qTyOTpx9j9GHGwviMADY0
+          52t59Bp3QN9k6yNzqEHrnh20zSzZaAZSWpnsImH4uWniiO0CNyLOfkZ809ZZl7Mg
+          Yv9tPr252q+gL6HqsoXJ9Sb60n/p
+          -----END CERTIFICATE-----
+          -----BEGIN CERTIFICATE-----
+          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
+          nLRbwHOoq7hHwg==
+          -----END CERTIFICATE-----
+          -----BEGIN CERTIFICATE-----
+          MIIFYDCCBEigAwIBAgIQQAF3ITfU6UK47naqPGQKtzANBgkqhkiG9w0BAQsFADA/
+          MSQwIgYDVQQKExtEaWdpdGFsIFNpZ25hdHVyZSBUcnVzdCBDby4xFzAVBgNVBAMT
+          DkRTVCBSb290IENBIFgzMB4XDTIxMDEyMDE5MTQwM1oXDTI0MDkzMDE4MTQwM1ow
+          TzELMAkGA1UEBhMCVVMxKTAnBgNVBAoTIEludGVybmV0IFNlY3VyaXR5IFJlc2Vh
+          cmNoIEdyb3VwMRUwEwYDVQQDEwxJU1JHIFJvb3QgWDEwggIiMA0GCSqGSIb3DQEB
+          AQUAA4ICDwAwggIKAoICAQCt6CRz9BQ385ueK1coHIe+3LffOJCMbjzmV6B493XC
+          ov71am72AE8o295ohmxEk7axY/0UEmu/H9LqMZshftEzPLpI9d1537O4/xLxIZpL
+          wYqGcWlKZmZsj348cL+tKSIG8+TA5oCu4kuPt5l+lAOf00eXfJlII1PoOK5PCm+D
+          LtFJV4yAdLbaL9A4jXsDcCEbdfIwPPqPrt3aY6vrFk/CjhFLfs8L6P+1dy70sntK
+          4EwSJQxwjQMpoOFTJOwT2e4ZvxCzSow/iaNhUd6shweU9GNx7C7ib1uYgeGJXDR5
+          bHbvO5BieebbpJovJsXQEOEO3tkQjhb7t/eo98flAgeYjzYIlefiN5YNNnWe+w5y
+          sR2bvAP5SQXYgd0FtCrWQemsAXaVCg/Y39W9Eh81LygXbNKYwagJZHduRze6zqxZ
+          Xmidf3LWicUGQSk+WT7dJvUkyRGnWqNMQB9GoZm1pzpRboY7nn1ypxIFeFntPlF4
+          FQsDj43QLwWyPntKHEtzBRL8xurgUBN8Q5N0s8p0544fAQjQMNRbcTa0B7rBMDBc
+          SLeCO5imfWCKoqMpgsy6vYMEG6KDA0Gh1gXxG8K28Kh8hjtGqEgqiNx2mna/H2ql
+          PRmP6zjzZN7IKw0KKP/32+IVQtQi0Cdd4Xn+GOdwiK1O5tmLOsbdJ1Fu/7xk9TND
+          TwIDAQABo4IBRjCCAUIwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAQYw
+          SwYIKwYBBQUHAQEEPzA9MDsGCCsGAQUFBzAChi9odHRwOi8vYXBwcy5pZGVudHJ1
+          c3QuY29tL3Jvb3RzL2RzdHJvb3RjYXgzLnA3YzAfBgNVHSMEGDAWgBTEp7Gkeyxx
+          +tvhS5B1/8QVYIWJEDBUBgNVHSAETTBLMAgGBmeBDAECATA/BgsrBgEEAYLfEwEB
+          ATAwMC4GCCsGAQUFBwIBFiJodHRwOi8vY3BzLnJvb3QteDEubGV0c2VuY3J5cHQu
+          b3JnMDwGA1UdHwQ1MDMwMaAvoC2GK2h0dHA6Ly9jcmwuaWRlbnRydXN0LmNvbS9E
+          U1RST09UQ0FYM0NSTC5jcmwwHQYDVR0OBBYEFHm0WeZ7tuXkAXOACIjIGlj26Ztu
+          MA0GCSqGSIb3DQEBCwUAA4IBAQAKcwBslm7/DlLQrt2M51oGrS+o44+/yQoDFVDC
+          5WxCu2+b9LRPwkSICHXM6webFGJueN7sJ7o5XPWioW5WlHAQU7G75K/QosMrAdSW
+          9MUgNTP52GE24HGNtLi1qoJFlcDyqSMo59ahy2cI2qBDLKobkx/J3vWraV0T9VuG
+          WCLKTVXkcGdtwlfFRjlBz4pYg1htmf5X6DYO8A4jqv2Il9DjXA6USbW1FzXSLr9O
+          he8Y4IWS6wY7bCkjCWDcRQJMEhg76fsO3txE+FiYruq9RUWhiF1myv4Q6W+CyBFC
+          Dfvp7OOGAN6dEOM4+qR9sdjoSYKEBpsr6GtPAQw4dy753ec5
+          -----END CERTIFICATE-----
+
+
+    passthrough:
+      ingressGateway: "passthrough-ingressgateway"
+      hosts:
+        - "*.{{ .Values.domain }}"
+      tls:
+        mode: "PASSTHROUGH"
+
+istiooperator:
+  enabled: true
+  git: 
+    repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/istio-operator.git
+    path: "./chart"
+    tag: "1.13.4-bb.0"
+
+sso: 
+  oidc:
+    host: keycloak.caskey-p1cbb.bahsoftwarefactory.com
+    realm: monitoring
+  certificate_authority: ''
+
+jaegar: 
+  enabled: true
+
+kiali: 
+  enabled: false
+
+clusterAuditor:
+  enabled: false
+
+gatekeeper: 
+  enabled: false
+
+kyverno:
+  enabled: false
+
+kyvernopolicies:
+  enabled: false
+
+logging:
+  enabled: false
+  values:
+    elasticsearch:
+      master:
+        count: 1
+        persistence:
+          size: 256Mi
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1Gi
+      data:
+        count: 1
+        persistence:
+          size: 256Mi
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1Gi
+    kibana:
+      count: 1
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+
+eckoperator:
+  enabled: false
+
+fluentbit:
+  enabled: false
+  values:
+    securityContext:
+      privileged: true
+
+promtail: 
+  enabled: false
+
+loki: 
+  enabled: false
+
+tempo:
+  enabled: false
+
+monitoring:
+  enabled: false
+  sso:
+    enabled: true
+    prometheus:
+      client_id: "prometheus"
+      client_secret: "oRCUzZrEHiD0HdQgKuGe3jJ6bHIncwfF"
+    alertmanager: 
+      client_id: "alertmanager"
+      client_secret: "2maBnMJuCVoiQGlcUrMkUy9s0iecOkNh"
+    grafana:  
+      client_id: "grafana"
+      client_secret: "6QuDpglMWAheMWEFKyMyo6Ediz7LbGKP"
+      tls_skip_verify_insecure: true
+      scopes: "Grafana"
+      # auth_url: "https://keycloak.stg.bahsoftwarefactory.com/auth/realms/bsf/protocol/openid-connect/auth"
+      # token_url: "https://keycloak.stg.bahsoftwarefactory.com/auth/realms/bsf/protocol/openid-connect/token"
+      # api_url: "https://keycloak.stg.bahsoftwarefactory.com/auth/realms/bsf/protocol/openid-connect/userinfo"
+      allow_sign_up: "true"
+  # git:
+  #   repo: https://repo1.dso.mil/platform-one/big-bang/apps/core/monitoring.git
+  #   path: "./chart"
+  #   tag: "35.5.1-bb.2"
+  # values:
+  #   prometheus:
+  #     prometheusSpec:
+  #       resources:
+  #         requests:
+  #           cpu: 200m
+  #           memory: 1Gi
+
+twistlock:
+  enabled: false
+  values:
+    console:
+      persistence:
+        size: 256Mi
+
+addons: 
+  
+  argocd: 
+    enabled: false
+
+  authservice: 
+    enabled: true
+  
+  minioOperator:
+    enabled: false
+
+  minio: 
+    enabled: false
+  
+  gitlab:
+    enabled: true
+    # git: 
+    #   repo: https://repo1.dso.mil/platform-one/big-bang/apps/developer-tools/gitlab.git
+    #   path: "./chart"
+    #   tag: "6.0.1-bb.1"
+    hostnames:
+      gitlab: gitlab
+      registry: registry
+    objectStorage: 
+      type: "s3"
+      endpoint: "https://s3.amazonaws.com"
+      region: "us-east-1"
+      bucketPrefix: "caskey-p1cbb"
+      # accessKey: ""
+      # accessSecret: ""
+      iamProfile: "BSF_RKE2_ControlPlane_Role"
+    values:
+      # minio: 
+      #   enabled: false
+      gitlab:
+        webservice:
+          minReplicas: 1
+          maxReplicas: 1
+          helmTests:
+            enabled: false
+        gitlab-shell:
+          minReplicas: 1
+          maxReplicas: 1
+        sidekiq:
+          minReplicas: 1
+          maxReplicas: 1
+          toolbox:
+        # backups:
+        #   objectStorage:
+        #     config:
+        #       secret: gitlab-object-storage
+        #       key: backups
+      # minio:
+      #   enabled: false
+      # registry:
+      #   bucket: caskey-p1cbb-gitlab-registry
+      #   hpa:
+      #     minReplicas: 1
+      #     maxReplicas: 1
+      global:
+        appConfig:
+          # object_store:
+          #   enabled: true
+          #   # storage_options:
+          #   #   server_side_encryption: aws:kms
+          #   #   server_side_encryption_kms_key_id: arn:aws:kms:us-east-1:729651203190:alias/aws/s3
+          #   connection: 
+          #     secret: gitlab-object-storage
+          #     key: rails
+          # artifacts: 
+          #   bucket: caskey-p1cbb-backups-storage
+          # backups:
+          #   bucket: caskey-p1cbb-gitlab-backups-storage
+          #   tmpBucket: caskey-p1cbb-gitlab-tmp-storage
+          # dependencyProxy:
+          #   bucket: caskey-p1cbb-gitlab-dependencyproxy-storage
+          # externalDiffs:
+          #   bucket: caskey-p1cbb-gitlab-externaldiffs-storage
+          # lfs:
+          #   bucket: caskey-p1cbb-gitlab-lfs-storage
+          # packages:
+          #   bucket: caskey-p1cbb-gitlab-packages-storage
+          # terraformState:
+          #   bucket: caskey-p1cbb-gitlab-terraformstate-storage
+          # uploads:
+          #   bucket: caskey-p1cbb-gitlab-uploads-storage
+          defaultCanCreateGroup: true
+          enableUsagePing: true
+          enableImpersonation: true
+          defaultTheme: 11
+          defaultProjectsFeatures:
+            issues: true
+            mergeRequests: true
+            wiki: true
+            snippets: true
+            builds: true
+            containerRegistry: true
+          # gitlab: 
+          #   toolbox:
+          #     backups:
+          #       objectStorage:
+          #         config: 
+          #           secret: gitlab-object-storage
+          #           key: backups
+          # omniauth:
+          #   enabled: true
+          #   allowSingleSignOn: ['saml', 'github']
+          #   providers: 
+          #     - secret: gitlab-github
+          #     - secret: gitlab-keycloak
+          # registry: 
+          #   enabled: true
+          #   storage:
+          #     secret: gitlab-registry-storage
+          #     key: config
+  
+  gitlabRunner: 
+    enabled: false
+  
+  nexus:
+    enabled: false
+  
+  sonarqube:
+    enabled: false
+  
+  anchore:
+    enabled: false
+  
+  mattermostoperator:
+    enabled: false
+  
+  mattermost: 
+    enabled: false
+  
+  velero:
+    enabled: false
+  
+  keycloak:
+    enabled: false
+  
+  vault: 
+    enabled: false
