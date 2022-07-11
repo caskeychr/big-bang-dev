@@ -1,0 +1,210 @@
+{
+    "apiVersion": "install.istio.io/v1alpha1",
+    "kind": "IstioOperator",
+    "metadata": {
+        "annotations": {
+            "meta.helm.sh/release-name": "istio-system-istio",
+            "meta.helm.sh/release-namespace": "istio-system"
+        },
+        "creationTimestamp": "2022-07-05T14:17:34Z",
+        "deletionGracePeriodSeconds": 0,
+        "deletionTimestamp": "2022-07-05T14:25:28Z",
+        "finalizers": [
+            "istio-finalizer.install.istio.io"
+        ],
+        "generation": 2,
+        "labels": {
+            "app.kubernetes.io/managed-by": "Helm",
+            "helm.toolkit.fluxcd.io/name": "istio",
+            "helm.toolkit.fluxcd.io/namespace": "bigbang"
+        },
+        "name": "istiocontrolplane",
+        "namespace": "istio-system",
+        "resourceVersion": "2798852",
+        "uid": "bbdf3df3-c844-468b-93de-2562044fde8e"
+    },
+    "spec": {
+        "components": {
+            "ingressGateways": [
+                {
+                    "enabled": false,
+                    "k8s": {
+                        "affinity": {},
+                        "nodeSelector": {},
+                        "podAnnotations": {},
+                        "resources": {},
+                        "service": {
+                            "type": "LoadBalancer"
+                        },
+                        "serviceAnnotations": {},
+                        "tolerations": []
+                    },
+                    "label": {
+                        "app": "istio-ingressgateway",
+                        "istio": "ingressgateway"
+                    },
+                    "name": "istio-ingressgateway",
+                    "namespace": "istio-system"
+                },
+                {
+                    "enabled": true,
+                    "k8s": {
+                        "service": {
+                            "type": "LoadBalancer"
+                        },
+                        "serviceAnnotations": {
+                            "service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags": "kubernetes.io/cluster/c-m-n6rc24wl=owned,env=staging,ingress-type=passthrough",
+                            "service.beta.kubernetes.io/aws-load-balancer-backend-protocol": "ssl",
+                            "service.beta.kubernetes.io/aws-load-balancer-type": "nlb"
+                        }
+                    },
+                    "label": {
+                        "app": "passthrough-ingressgateway",
+                        "istio": "ingressgateway"
+                    },
+                    "name": "passthrough-ingressgateway",
+                    "namespace": "istio-system"
+                },
+                {
+                    "enabled": true,
+                    "k8s": {
+                        "service": {
+                            "type": "LoadBalancer"
+                        },
+                        "serviceAnnotations": {
+                            "service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags": "kubernetes.io/cluster/c-m-n6rc24wl=owned,env=staging,ingress-type=public",
+                            "service.beta.kubernetes.io/aws-load-balancer-type": "nlb"
+                        }
+                    },
+                    "label": {
+                        "app": "public-ingressgateway",
+                        "istio": "ingressgateway"
+                    },
+                    "name": "public-ingressgateway",
+                    "namespace": "istio-system"
+                }
+            ],
+            "pilot": {
+                "k8s": {
+                    "affinity": {},
+                    "hpaSpec": {
+                        "maxReplicas": 3,
+                        "metrics": [
+                            {
+                                "resource": {
+                                    "name": "cpu",
+                                    "targetAverageUtilization": 60
+                                },
+                                "type": "Resource"
+                            }
+                        ],
+                        "minReplicas": 1,
+                        "scaleTargetRef": {
+                            "apiVersion": "apps/v1",
+                            "kind": "Deployment",
+                            "name": "istiod"
+                        }
+                    },
+                    "nodeSelector": {},
+                    "podAnnotations": {},
+                    "replicaCount": 1,
+                    "resources": {
+                        "limits": {
+                            "cpu": "500m",
+                            "memory": "2Gi"
+                        },
+                        "requests": {
+                            "cpu": "500m",
+                            "memory": "2Gi"
+                        }
+                    },
+                    "serviceAnnotations": {},
+                    "strategy": {},
+                    "tolerations": []
+                }
+            }
+        },
+        "hub": "registry1.dso.mil/ironbank/opensource/istio",
+        "meshConfig": {
+            "accessLogFile": "/dev/stdout",
+            "defaultConfig": {
+                "holdApplicationUntilProxyStarts": true,
+                "tracing": {
+                    "sampling": 10
+                },
+                "zipkinAddress": "jaeger-collector.jaeger.svc:9411"
+            },
+            "enableTracing": true
+        },
+        "profile": "default",
+        "tag": "1.13.2",
+        "values": {
+            "defaultRevision": "default",
+            "global": {
+                "imagePullPolicy": "IfNotPresent",
+                "imagePullSecrets": [
+                    "private-registry"
+                ],
+                "proxy": {
+                    "resources": {
+                        "limits": {
+                            "cpu": "100m",
+                            "memory": "256Mi"
+                        },
+                        "requests": {
+                            "cpu": "100m",
+                            "memory": "256Mi"
+                        }
+                    }
+                },
+                "proxy_init": {
+                    "resources": {
+                        "limits": {
+                            "cpu": "100m",
+                            "memory": "256Mi"
+                        },
+                        "requests": {
+                            "cpu": "100m",
+                            "memory": "256Mi"
+                        }
+                    }
+                },
+                "tracer": {
+                    "zipkin": {
+                        "address": "jaeger-collector.jaeger.svc:9411"
+                    }
+                }
+            },
+            "sidecarInjectorWebhook": {
+                "neverInjectSelector": [
+                    {
+                        "matchExpressions": [
+                            {
+                                "key": "app.kubernetes.io/component",
+                                "operator": "In",
+                                "values": [
+                                    "fluentd-configcheck"
+                                ]
+                            }
+                        ]
+                    }
+                ],
+                "rewriteAppHTTPProbe": true
+            }
+        }
+    },
+    "status": {
+        "componentStatus": {
+            "Base": {
+                "status": "HEALTHY"
+            },
+            "IngressGateways": {
+                "status": "HEALTHY"
+            },
+            "Pilot": {
+                "status": "HEALTHY"
+            }
+        },
+        "status": "HEALTHY"
+    }
+}

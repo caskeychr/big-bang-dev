@@ -10,8 +10,7 @@ kubectl create secret -n bigbang generic private-git --from-literal=username=$CS
 
 # kubectl apply -f dev/bigbang.yaml
 
-cd ..
-cd bigbang
+cd bigbang2
 
 helm upgrade -i bigbang chart -n bigbang --create-namespace \
   --set registryCredentials[0].username="${REGISTRY1_USER}" \

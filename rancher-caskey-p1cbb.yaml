@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Config
+clusters:
+- name: "caskey-p1cbb"
+  cluster:
+    server: "https://rancher.bahsoftwarefactory.com/k8s/clusters/c-m-4s7wvgjp"
+
+users:
+- name: "caskey-p1cbb"
+  user:
+    token: "kubeconfig-u-jvgc9q9gqw:dhvzrhkmgzpnsdgw9hkcp7qmdkn5d4b8sqvpggg2m6bh4nkz9htggn"
+
+
+contexts:
+- name: "caskey-p1cbb"
+  context:
+    user: "caskey-p1cbb"
+    cluster: "caskey-p1cbb"
+
+current-context: "caskey-p1cbb"

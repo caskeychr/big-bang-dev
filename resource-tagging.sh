@@ -1,9 +1,3 @@
-export AWS_PROFILE=awsaml-729651203190-BAHSSO_Admin_Role
-export AWS_DEFAULT_PROFILE=awsaml-729651203190-BAHSSO_Admin_Role
-
-export CLUSTER_VALUE=c-m-r5znkvvz
-export SECURITY_GROUP_ID=sg-09a154c331ce9e588
-
 # Tag Security Group
 
 aws resourcegroupstaggingapi tag-resources \
