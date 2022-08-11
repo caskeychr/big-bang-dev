@@ -1,0 +1,16 @@
+version: '3'
+
+tasks: 
+  main-task:
+    cmds:
+      - task: retrieve_awscreds
+      - task: test_iam_profile
+  retrieve_awscreds:
+    cmds: 
+      - ./tasks/retrieve_awscreds.sh
+    # silent: true
+  test_iam_profile:
+    cmds:
+      - ./tests/test_iam_profile.sh
+      # - ls /aws_creds
+    # silent: true

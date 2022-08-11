@@ -1,0 +1,1 @@
+docker build -t caskeychr/preflight ./containers/preflight

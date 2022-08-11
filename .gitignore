@@ -1,4 +1,8 @@
 localrun.sh
 bigbang-dev-cert.yaml
 /bigbang
+/bigbang2
 *.pem
+gitlab-keycloak.yaml
+gitlab-rails-storage.yaml
+registry-storage.yaml 
